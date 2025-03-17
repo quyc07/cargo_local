@@ -12,3 +12,4 @@ walkdir = "2"
 clap = { version = "4", features = ["cargo", "derive", "string"] }
 anyhow = "1.0.97"
 regex = "1.11.1"
+dirs-next = "2.0.0"
