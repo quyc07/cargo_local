@@ -29,11 +29,14 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Command {
+    /// show all crates
     List,
-
+    /// search crates
     Search {
+        /// crate name
         #[arg(short)]
         name: String,
+        /// search mode
         #[arg(short,default_value=Mode::All)]
         mode: Mode,
     },
@@ -41,7 +44,9 @@ enum Command {
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 enum Mode {
+    /// search and show all crates
     All,
+    /// search and only show newest crate
     New,
 }
 

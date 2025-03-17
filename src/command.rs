@@ -88,7 +88,7 @@ pub(crate) fn search(name: String, mode: Mode) -> Vec<Crate> {
         .filter_map(|r| -> Option<Crate> {
             r.ok()
                 .and_then(|d| d.file_name().to_str().map(|n| n.to_string()))
-                .filter(|file_name| file_name.starts_with(&name))
+                .filter(|file_name| file_name.contains(&name))
                 .and_then(Crate::parse)
         })
         .collect();
