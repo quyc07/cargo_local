@@ -1,6 +1,6 @@
 # Cargo Local Tools
 
-`cargo_local` 是一个用于管理本地 Cargo 依赖的命令行工具。它可以列出所有已安装的 crates，并提供搜索功能。
+`cargo_local_tools` 是一个用于管理本地 Cargo 依赖的命令行工具。它可以列出所有已安装的 crates，并提供搜索功能。
 
 ## 🚀 安装
 
