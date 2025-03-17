@@ -4,19 +4,18 @@ use clap::{Parser, Subcommand, ValueEnum};
 use command::Crate;
 mod command;
 
-static CARGO_REGISTRY: LazyLock<String> =
-    LazyLock::new(|| {
-        let mut cargo_home = env::var("CARGO_HOME")
+static CARGO_REGISTRY: LazyLock<String> = LazyLock::new(|| {
+    let mut cargo_home = env::var("CARGO_HOME")
         .map(PathBuf::from)
         .unwrap_or_else(|_| {
             dirs_next::home_dir()
                 .map(|home| home.join(".cargo"))
                 .expect("can not find cargo home")
         });
-        cargo_home.push("registry");
-        cargo_home.push("cache");
-        cargo_home.to_string_lossy().to_string()
-    });
+    cargo_home.push("registry");
+    cargo_home.push("cache");
+    cargo_home.to_string_lossy().to_string()
+});
 
 fn main() {
     let cli = Cli::parse();
