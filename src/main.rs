@@ -9,11 +9,15 @@ static CARGO_REGISTRY: LazyLock<String> =
 
 fn main() {
     let cli = Cli::parse();
-    let res: Vec<Crate> = match cli.command {
+    let crates: Vec<Crate> = match cli.command {
         Command::List => command::list(),
         Command::Search { name, mode } => command::search(name, mode),
     };
-    res.iter().for_each(|c| println!("{c}"));
+    let max_name_len = crates.iter().map(|c| c.name.len()).max().unwrap_or(10);
+
+    crates
+        .iter()
+        .for_each(|c| println!("{:<width$} {}", c.name, c.version, width = max_name_len));
 }
 
 #[derive(Parser)]

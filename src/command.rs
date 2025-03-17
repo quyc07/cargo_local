@@ -7,8 +7,8 @@ use crate::{Mode, CARGO_REGISTRY};
 
 #[derive(Clone)]
 pub(crate) struct Crate {
-    name: String,
-    version: Version,
+    pub(crate) name: String,
+    pub(crate) version: Version,
 }
 
 impl Crate {
@@ -31,7 +31,7 @@ impl Display for Crate {
 }
 
 #[derive(Clone, PartialEq, Eq)]
-struct Version {
+pub(crate) struct Version {
     v: String,
 }
 
@@ -43,6 +43,12 @@ impl Display for Version {
 
 impl PartialOrd for Version {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(other.v.cmp(&self.v))
+    }
+}
+
+impl Ord for Version {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         let s_v = self
             .v
             .split(".")
@@ -57,12 +63,7 @@ impl PartialOrd for Version {
             .zip(o_v.iter())
             .find(|(s, o)| s != o)
             .map(|(s, o)| o.cmp(s))
-    }
-}
-
-impl Ord for Version {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        other.v.cmp(&self.v)
+            .expect("fail to compare version")
     }
 }
 
@@ -74,7 +75,7 @@ pub(crate) fn list() -> Vec<Crate> {
         .filter_map(|r| {
             r.ok()
                 .and_then(|d| d.file_name().to_str().map(|n| n.to_string()))
-                .and_then(|file_name| Crate::parse(file_name))
+                .and_then(Crate::parse)
         })
         .collect()
 }
@@ -88,7 +89,7 @@ pub(crate) fn search(name: String, mode: Mode) -> Vec<Crate> {
             r.ok()
                 .and_then(|d| d.file_name().to_str().map(|n| n.to_string()))
                 .filter(|file_name| file_name.starts_with(&name))
-                .and_then(|file_name| Crate::parse(file_name))
+                .and_then(Crate::parse)
         })
         .collect();
     match mode {
