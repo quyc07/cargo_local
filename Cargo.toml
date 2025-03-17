@@ -1,5 +1,5 @@
 [package]
-name = "cargo_local"
+name = "cargo_local_tools"
 version = "0.1.0"
 edition = "2021"
 description = "cargo local tools"
