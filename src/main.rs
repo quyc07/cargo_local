@@ -4,30 +4,27 @@ use clap::{Parser, Subcommand, ValueEnum};
 use command::Crate;
 mod command;
 
-static CARGO_REGISTRY: LazyLock<String> = LazyLock::new(|| {
-    let mut cargo_home = env::var("CARGO_HOME")
+static CARGO_HOME: LazyLock<String> = LazyLock::new(|| {
+    let cargo_home = env::var("CARGO_HOME")
         .map(PathBuf::from)
         .unwrap_or_else(|_| {
             dirs_next::home_dir()
                 .map(|home| home.join(".cargo"))
                 .expect("can not find cargo home")
         });
-    cargo_home.push("registry");
-    cargo_home.push("cache");
     cargo_home.to_string_lossy().to_string()
 });
 
+static CARGO_REGISTRY: LazyLock<String> =
+    LazyLock::new(|| format!("{}/registry/cache", CARGO_HOME.to_string()));
+
 fn main() {
     let cli = Cli::parse();
-    let crates: Vec<Crate> = match cli.command {
+    match cli.command {
         Command::List => command::list(),
         Command::Search { name, mode } => command::search(name, mode),
+        Command::Home => println!("Cargo home: {}",CARGO_HOME.to_string()),
     };
-    let max_name_len = crates.iter().map(|c| c.name.len()).max().unwrap_or(10);
-
-    crates
-        .iter()
-        .for_each(|c| println!("{:<width$} {}", c.name, c.version, width = max_name_len));
 }
 
 #[derive(Parser)]
@@ -39,6 +36,8 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Command {
+    /// cargo home
+    Home,
     /// show all crates
     List,
     /// search crates

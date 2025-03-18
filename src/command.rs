@@ -68,9 +68,9 @@ impl Ord for Version {
     }
 }
 
-pub(crate) fn list() -> Vec<Crate> {
+pub(crate) fn list() {
     let walk_dir = WalkDir::new(CARGO_REGISTRY.as_str());
-    walk_dir
+    let crates: Vec<Crate> = walk_dir
         .max_depth(2)
         .into_iter()
         .filter_map(|r| {
@@ -78,12 +78,17 @@ pub(crate) fn list() -> Vec<Crate> {
                 .and_then(|d| d.file_name().to_str().map(|n| n.to_string()))
                 .and_then(Crate::parse)
         })
-        .collect()
+        .collect();
+    let max_name_len = crates.iter().map(|c| c.name.len()).max().unwrap_or(10);
+
+    crates
+        .iter()
+        .for_each(|c| println!("{:<width$} {}", c.name, c.version, width = max_name_len));
 }
 
-pub(crate) fn search(name: String, mode: Mode) -> Vec<Crate> {
+pub(crate) fn search(name: String, mode: Mode) {
     let walk_dir = WalkDir::new(CARGO_REGISTRY.as_str());
-    let crates = walk_dir
+    let crates:Vec<Crate> = walk_dir
         .max_depth(2)
         .into_iter()
         .filter_map(|r| -> Option<Crate> {
@@ -93,7 +98,7 @@ pub(crate) fn search(name: String, mode: Mode) -> Vec<Crate> {
                 .and_then(Crate::parse)
         })
         .collect();
-    match mode {
+    let crates:Vec<Crate> = match mode {
         Mode::All => crates,
         Mode::New => {
             let name_2_crates = crates.into_iter().into_group_map_by(|c| c.name.clone());
@@ -109,5 +114,10 @@ pub(crate) fn search(name: String, mode: Mode) -> Vec<Crate> {
                 })
                 .collect()
         }
-    }
+    };
+    let max_name_len = crates.iter().map(|c| c.name.len()).max().unwrap_or(10);
+
+    crates
+        .iter()
+        .for_each(|c| println!("{:<width$} {}", c.name, c.version, width = max_name_len));
 }
