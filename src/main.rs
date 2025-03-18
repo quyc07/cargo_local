@@ -1,7 +1,6 @@
 use std::{env, path::PathBuf, sync::LazyLock};
 
 use clap::{Parser, Subcommand, ValueEnum};
-use command::Crate;
 mod command;
 
 static CARGO_HOME: LazyLock<String> = LazyLock::new(|| {
@@ -16,14 +15,14 @@ static CARGO_HOME: LazyLock<String> = LazyLock::new(|| {
 });
 
 static CARGO_REGISTRY: LazyLock<String> =
-    LazyLock::new(|| format!("{}/registry/cache", CARGO_HOME.to_string()));
+    LazyLock::new(|| format!("{}/registry/cache", *CARGO_HOME));
 
 fn main() {
     let cli = Cli::parse();
     match cli.command {
         Command::List => command::list(),
         Command::Search { name, mode } => command::search(name, mode),
-        Command::Home => println!("Cargo home: {}",CARGO_HOME.to_string()),
+        Command::Home => println!("Cargo home: {}",*CARGO_HOME),
     };
 }
 
