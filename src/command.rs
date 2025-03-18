@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+use itertools::Itertools;
 use regex::Regex;
 use walkdir::WalkDir;
 
@@ -82,7 +83,7 @@ pub(crate) fn list() -> Vec<Crate> {
 
 pub(crate) fn search(name: String, mode: Mode) -> Vec<Crate> {
     let walk_dir = WalkDir::new(CARGO_REGISTRY.as_str());
-    let mut crates = walk_dir
+    let crates = walk_dir
         .max_depth(2)
         .into_iter()
         .filter_map(|r| -> Option<Crate> {
@@ -95,8 +96,18 @@ pub(crate) fn search(name: String, mode: Mode) -> Vec<Crate> {
     match mode {
         Mode::All => crates,
         Mode::New => {
-            crates.sort_by_key(|c| c.version.clone());
-            crates.first().map_or(vec![], |c| vec![c.clone()])
+            let name_2_crates = crates.into_iter().into_group_map_by(|c| c.name.clone());
+            name_2_crates
+                .into_values()
+                .filter_map(|mut cs| {
+                    if cs.is_empty() {
+                        None
+                    } else {
+                        cs.sort_by_key(|c| c.version.clone());
+                        cs.first().cloned()
+                    }
+                })
+                .collect()
         }
     }
 }
