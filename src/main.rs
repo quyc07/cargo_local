@@ -22,7 +22,7 @@ fn main() {
     match cli.command {
         Command::List => command::list(),
         Command::Search { name, mode } => command::search(name, mode),
-        Command::Home => println!("Cargo home: {}",*CARGO_HOME),
+        Command::Home => println!("Cargo home: {}", *CARGO_HOME),
     };
 }
 

@@ -88,7 +88,7 @@ pub(crate) fn list() {
 
 pub(crate) fn search(name: String, mode: Mode) {
     let walk_dir = WalkDir::new(CARGO_REGISTRY.as_str());
-    let crates:Vec<Crate> = walk_dir
+    let crates: Vec<Crate> = walk_dir
         .max_depth(2)
         .into_iter()
         .filter_map(|r| -> Option<Crate> {
@@ -98,7 +98,7 @@ pub(crate) fn search(name: String, mode: Mode) {
                 .and_then(Crate::parse)
         })
         .collect();
-    let crates:Vec<Crate> = match mode {
+    let crates: Vec<Crate> = match mode {
         Mode::All => crates,
         Mode::New => {
             let name_2_crates = crates.into_iter().into_group_map_by(|c| c.name.clone());
