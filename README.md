@@ -20,25 +20,32 @@ cargo_local_tools <COMMAND> [OPTIONS]
 
 | 命令                    | 说明                |
 | --------------------- | ----------------- |
+| `home`                | 显示cargo home路径 |
 | `list`                | 显示所有本地已安装的 crates |
 | `search <crate_name>` | 搜索本地 crates       |
 | `help`                | 显示帮助信息            |
 
 ### **示例**
 
-#### 1️⃣ 列出所有本地 crates
+#### 1️⃣ 显示cargo home路径
+
+```sh
+cargo_local_tools home
+```
+
+#### 2️⃣ 列出所有本地 crates
 
 ```sh
 cargo_local_tools list
 ```
 
-#### 2️⃣ 搜索指定 crate
+#### 3️⃣ 搜索指定 crate
 
 ```sh
-cargo_local_tools search anyhow
+cargo_local_tools search -n anyhow
 ```
 
-#### 3️⃣ 显示帮助信息
+#### 4️⃣ 显示帮助信息
 
 ```sh
 cargo_local_tools help
